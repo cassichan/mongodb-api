@@ -15,12 +15,10 @@ const PORT = 4000;
 app.use(express.json()); //allow a POST with JSON
 app.use(cors()); //allow anyone to hit api
 
-//app.get and app.post go here
-
-//If you go to http://localhost:4000/
-// app.get("/", (req, res) => {
-//   res.status(200).send("Hello World");
-// });
+// If you go to http://localhost:4000/
+app.get("/", (req, res) => {
+  res.status(200).send("Hello World");
+});
 
 //This one got the movies that contain Matrix in an array of objects
 // app.get("/movies/:movietitle", (req, res) => {
@@ -48,65 +46,45 @@ app.use(cors()); //allow anyone to hit api
 //       .catch(console.error);
 //     })
 
-//Loops through the movietitle itself
-app.get("/movies/:movietitle", (req, res) => {
-  const movietitle = req.params.movietitle;
-  console.log(`Looking for movie ${movietitle}`);
-  const query = { title: { $regex: movietitle, $options: "i" } };
-
-  movieCollection
-    .find(query)
-    .limit(10)
-    .toArray((err, movietitle) => {
-      console.log(movietitles);
-      res.status(200).json(movietitle);
-    })
-    // let movieArray = movietitle
-    let output = "<html><body><ul>";
-      for (let i = 0; i < movietitle.length; i++) {
-        output =
-          output + '<li><input type="checkbox">' + movietitle[i] + "</li>";
-      }
-      output = output + "</ul></body></html>";
-      res.send(output);
-
-    })
-    // .then((movieTitles) => {
-    //   let output = "<html><body><ul>";
-    //   for (let i = 0; i < movieTitles.length; i++) {
-    //     output =
-    //       output + '<li><input type="checkbox">' + movieTitles[i] + "</li>";
-    //   }
-    //   output = output + "</ul></body></html>";
-    //   res.send(output);
-    // });
-// });
-
+//Loops through the movietitle word itself
 // app.get("/movies/:movietitle", (req, res) => {
-//   const movietitle = req.params.movietitle; // get the actual movie title (everything to the right of "/movies/"
-//   console.log(`Looking for movie ${movietitle}`); // Show me (to prove the obvios) what the user passed to me.
+//   const movietitle = req.params.movietitle;
+//   console.log(`Looking for movie ${movietitle}`);
 //   const query = { title: { $regex: movietitle, $options: "i" } };
-//   console.log(movieCollection.countDocuments(query))
 
-// movieCollection
-//   .find(query)
-//   .limit(10)
-//   .toArray((err, movietitles) => {
-//     console.log(movies)
-//     res.status(200).json(movietitles);
+//   movieCollection
+//     .find(query)
+//     .limit(10)
+//     .toArray((err, matchingTitles) => {
+//       // console.log(matchingTitles);
+//         // res.status(200).json(matchingTitles);
+//       let movieArray = matchingTitles.json();
+//       console.log(movieArray);
+//       function loopThrough(movieArray) {
+//         let output = "<html><body><ul>";
+//         for (let i = 0; i < movieArray.length; i++) {
+//           output =
+//             output +
+//             '<li><input type="checkbox">' +
+//             movieArray[i] +
+//             "</li>";
+//         }
+//         output = output + "</ul></body></html>";
+//         res.send(output);
+//       }
+//       loopThrough(movieArray)
+//     });
 //   })
-//   console.log(movies)
-// })
+
+// let movieArray = movietitle
 //   let output = "<html><body><ul>";
-//   for (let i = 0; i < movie.length; i++) {
+//   for (let i = 0; i < movieArray.length; i++) {
 //     output =
-//       output + '<li><input type="checkbox">' + movietitle[i] + "</li>";
+//       output + '<li><input type="checkbox">' + matchingTitles[i] + "</li>";
 //   }
 //   output = output + "</ul></body></html>";
 //   res.send(output);
 // });
-
-//need toArray() for mongo. turns to array. allows .find to take a callback
 
 //If you go to http://localhost:4000/movies
 app.get("/movies", (req, res) => {
