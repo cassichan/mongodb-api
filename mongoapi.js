@@ -6,7 +6,6 @@ const client = new MongoClient(uri);
 
 const db = client.db("sample_mflix");
 const movieCollection = db.collection("movies");
-
 import express from "express";
 import cors from "cors";
 
@@ -19,16 +18,72 @@ app.use(cors()); //allow anyone to hit api
 //app.get and app.post go here
 
 //If you go to http://localhost:4000/
-app.get("/", (req, res) => {
-  res.status(200).send("Hello World");
+// app.get("/", (req, res) => {
+//   res.status(200).send("Hello World");
+// });
+
+app.get("/movies/:movietitle", (req, res) => {
+  // http://localhost:4000/movie/matrix
+  const movietitle = req.params.movietitle; // get the actual movie title (everything to the right of "/movies/"
+  console.log(`Looking for movie ${movietitle}`); // Show me what the user passed to me.
+  const query = { title: { $regex: movietitle, $options: "i" } };
+  movieCollection
+    .find(query)
+    .limit(10)
+    .toArray((err, movies) => {
+      console.log(movies);
+      res.status(200).json(movies);
+      console.log(query);
+    });
 });
+
+// .then((movieTitles) => {
+//   let output = "<html><body><ul>";
+//   for (let i = 0; i < movieTitles.length; i++) {
+//     output =
+//       output + '<li><input type="checkbox">' + movieTitles[i] + "</li>";
+//   }
+//   output = output + "</ul></body></html>";
+//   res.send(output);
+// })
+// .catch(console.error);
+// );
+
+// app.get("/movies/:movietitle", (req, res) => {
+//   const movietitle = req.params.movietitle; // get the actual movie title (everything to the right of "/movies/"
+//   console.log(`Looking for movie ${movietitle}`); // Show me (to prove the obvios) what the user passed to me.
+//   const query = { title: { $regex: movietitle, $options: "i" } };
+//   console.log(movieCollection.countDocuments(query))
+
+// movieCollection
+//   .find(query)
+//   .limit(10)
+//   .toArray((err, movietitles) => {
+//     console.log(movies)
+//     res.status(200).json(movietitles);
+//   })
+//   console.log(movies)
+// })
+//   let output = "<html><body><ul>";
+//   for (let i = 0; i < movie.length; i++) {
+//     output =
+//       output + '<li><input type="checkbox">' + movietitle[i] + "</li>";
+//   }
+//   output = output + "</ul></body></html>";
+//   res.send(output);
+// });
+
+//need toArray() for mongo. turns to array. allows .find to take a callback
 
 //If you go to http://localhost:4000/movies
 app.get("/movies", (req, res) => {
   const query = {}; //get everything with query
-//   console.log(movieCollection.countDocuments(query)) --> Check how many records getting back
+  console.log(movieCollection.countDocuments(query));
+  // Check how many records getting back
 
-  movieCollection.find(query).limit(10)
+  movieCollection
+    .find(query)
+    .limit(10)
     .toArray((err, movies) => {
       res.status(200).json(movies);
     });
@@ -36,17 +91,17 @@ app.get("/movies", (req, res) => {
 });
 
 //insert new movie into mongodb movies collection
-app.post('/movie', (req,res) => {
-    const newMovie = req.body
+app.post("/movie", (req, res) => {
+  const newMovie = req.body;
 
-    movieCollection.insertOne(newMovie, (err, results) => {
-        if (err) {
-            res.status(500).json({error: true})
-        } else {
-            res.status(201).json(results)
-        }
-    })
-})
+  movieCollection.insertOne(newMovie, (err, results) => {
+    if (err) {
+      res.status(500).json({ error: true });
+    } else {
+      res.status(201).json(results);
+    }
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Ready on http://localhost: ${PORT}`);
