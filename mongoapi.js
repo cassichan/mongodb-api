@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
   res.status(200).send("Hello World");
 });
 
-//This one got the movies that contain Matrix in an array of objects
+//This one got the movies that contain Matrix in an array of objects (prior to .then, which gave an error)
 // app.get("/movies/:movietitle", (req, res) => {
 //   // http://localhost:4000/movie/matrix
 //   const movietitle = req.params.movietitle; // get the actual movie title (everything to the right of "/movies/"
@@ -32,7 +32,7 @@ app.get("/", (req, res) => {
 //     .toArray((err, movies) => {
 //       console.log(movies);
 //       res.status(200).json(movies);
-//       // console.log(query);
+//       console.log(query);
 //     })
 //     .then((title) => {
 //         let output = "<html><body><ul>";
@@ -46,7 +46,7 @@ app.get("/", (req, res) => {
 //       .catch(console.error);
 //     })
 
-//Loops through the movietitle word itself
+//Returns checklist with [object object]
 // app.get("/movies/:movietitle", (req, res) => {
 //   const movietitle = req.params.movietitle;
 //   console.log(`Looking for movie ${movietitle}`);
@@ -58,7 +58,7 @@ app.get("/", (req, res) => {
 //     .toArray((err, matchingTitles) => {
 //       // console.log(matchingTitles);
 //         // res.status(200).json(matchingTitles);
-//       let movieArray = matchingTitles.json();
+//       let movieArray = matchingTitles;
 //       console.log(movieArray);
 //       function loopThrough(movieArray) {
 //         let output = "<html><body><ul>";
@@ -76,15 +76,103 @@ app.get("/", (req, res) => {
 //     });
 //   })
 
-// let movieArray = movietitle
+//Loops through the movietitle word itself
+// function loopThrough(movieArray) {
 //   let output = "<html><body><ul>";
-//   for (let i = 0; i < movieArray.length; i++) {
+//   for (let i = 0; i < movietitle.length; i++) {
 //     output =
-//       output + '<li><input type="checkbox">' + matchingTitles[i] + "</li>";
+//       output +
+//       '<li><input type="checkbox">' +
+//       movietitle[i] +
+//       "</li>";
 //   }
-//   output = output + "</ul></body></html>";
-//   res.send(output);
-// });
+
+//Look through each character in the array of objects
+// app.get("/movies/:movietitle", (req, res) => {
+//     const movietitle = req.params.movietitle;
+//     console.log(`Looking for movie ${movietitle}`);
+//     const query = { title: { $regex: movietitle, $options: "i" } };
+
+//     movieCollection
+//       .find(query)
+//       .limit(10)
+//       .toArray((err, matchingTitles) => {
+//         console.log(matchingTitles);
+//           // res.status(200).json(matchingTitles);
+//         let movieArray = JSON.stringify(matchingTitles);
+//         console.log(movieArray);
+//         function loopThrough(movieArray) {
+//           let output = "<html><body><ul>";
+//           for (let i = 0; i < movieArray.length; i++) {
+//             output =
+//               output +
+//               '<li><input type="checkbox">' +
+//               movieArray[i] +
+//               "</li>";
+//           }
+//           output = output + "</ul></body></html>";
+//           res.send(output);
+//         }
+//         loopThrough(movieArray)
+//       });
+//     })
+
+// Return checkboxes each with entire object for each movie that is found in query (each matrix movie)
+// app.get("/movies/:movietitle", (req, res) => {
+//   const movietitle = req.params.movietitle;
+//   console.log(`Looking for movie ${movietitle}`);
+//   const query = { title: { $regex: movietitle, $options: "i" } };
+
+//   movieCollection
+//     .find(query)
+//     .limit(10)
+//     .toArray((err, matchingMovies) => {
+//       console.log(matchingMovies);
+//         // res.status(200).json(matchingMovies);
+//       let movieArray = JSON.stringify(matchingMovies);
+//       console.log(movieArray);
+//       function loopThrough(movieArray) {
+//         let output = "<html><body><ul>";
+//         for (let i = 0; i < movieArray.length; i++) {
+//           output =
+//             output +
+//             '<li><input type="checkbox">' +
+//             movieArray +
+//             "</li>";
+//         }
+//         output = output + "</ul></body></html>";
+//         res.send(output);
+//       }
+//       loopThrough(movieArray)
+//     });
+//   })
+
+//Most recent
+app.get("/movies/:movietitle", (req, res) => {
+  const movietitle = req.params.movietitle;
+  console.log(`Looking for movie ${movietitle}`);
+  const query = { title: { $regex: movietitle, $options: "i" } };
+
+  movieCollection
+    .find(query)
+    .limit(10)
+    .toArray((err, matchingMovies) => {
+      console.log(matchingMovies);
+      // res.status(200).json(matchingMovies);
+      let movieArray = JSON.stringify(matchingMovies);
+      console.log(movieArray);
+      function loopThrough(movieArray) {
+        let output = "<html><body><ul>";
+        for (let i = 0; i < movieArray.length; i++) {
+          output =
+            output + '<li><input type="checkbox">' + movieArray + "</li>";
+        }
+        output = output + "</ul></body></html>";
+        res.send(output);
+      }
+      loopThrough(movieArray);
+    });
+});
 
 //If you go to http://localhost:4000/movies
 app.get("/movies", (req, res) => {
