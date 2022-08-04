@@ -20,103 +20,6 @@ app.get("/", (req, res) => {
   res.status(200).send("Hello World");
 });
 
-//This one got the movies that contain Matrix in an array of objects (prior to .then, which gave an error)
-// app.get("/movies/:movietitle", (req, res) => {
-//   // http://localhost:4000/movie/matrix
-//   const movietitle = req.params.movietitle; // get the actual movie title (everything to the right of "/movies/"
-//   console.log(`Looking for movie ${movietitle}`); // Show me what the user passed to me.
-//   const query = { title: { $regex: movietitle, $options: "i" } };
-//   movieCollection
-//     .find(query)
-//     .limit(10)
-//     .toArray((err, movies) => {
-//       console.log(movies);
-//       res.status(200).json(movies);
-//       console.log(query);
-//     })
-//     .then((title) => {
-//         let output = "<html><body><ul>";
-//         for (let i = 0; i < title.length; i++) {
-//           output =
-//             output + '<li><input type="checkbox">' +  + "</li>";
-//         }
-//         output = output + "</ul></body></html>";
-//         res.send(output);
-//       })
-//       .catch(console.error);
-//     })
-
-//Returns checklist with [object object]
-// app.get("/movies/:movietitle", (req, res) => {
-//   const movietitle = req.params.movietitle;
-//   console.log(`Looking for movie ${movietitle}`);
-//   const query = { title: { $regex: movietitle, $options: "i" } };
-
-//   movieCollection
-//     .find(query)
-//     .limit(10)
-//     .toArray((err, matchingTitles) => {
-//       // console.log(matchingTitles);
-//         // res.status(200).json(matchingTitles);
-//       let movieArray = matchingTitles;
-//       console.log(movieArray);
-//       function loopThrough(movieArray) {
-//         let output = "<html><body><ul>";
-//         for (let i = 0; i < movieArray.length; i++) {
-//           output =
-//             output +
-//             '<li><input type="checkbox">' +
-//             movieArray[i] +
-//             "</li>";
-//         }
-//         output = output + "</ul></body></html>";
-//         res.send(output);
-//       }
-//       loopThrough(movieArray)
-//     });
-//   })
-
-//Loops through the movietitle word itself
-// function loopThrough(movieArray) {
-//   let output = "<html><body><ul>";
-//   for (let i = 0; i < movietitle.length; i++) {
-//     output =
-//       output +
-//       '<li><input type="checkbox">' +
-//       movietitle[i] +
-//       "</li>";
-//   }
-
-//Look through each character in the array of objects
-// app.get("/movies/:movietitle", (req, res) => {
-//     const movietitle = req.params.movietitle;
-//     console.log(`Looking for movie ${movietitle}`);
-//     const query = { title: { $regex: movietitle, $options: "i" } };
-
-//     movieCollection
-//       .find(query)
-//       .limit(10)
-//       .toArray((err, matchingTitles) => {
-//         console.log(matchingTitles);
-//           // res.status(200).json(matchingTitles);
-//         let movieArray = JSON.stringify(matchingTitles);
-//         console.log(movieArray);
-//         function loopThrough(movieArray) {
-//           let output = "<html><body><ul>";
-//           for (let i = 0; i < movieArray.length; i++) {
-//             output =
-//               output +
-//               '<li><input type="checkbox">' +
-//               movieArray[i] +
-//               "</li>";
-//           }
-//           output = output + "</ul></body></html>";
-//           res.send(output);
-//         }
-//         loopThrough(movieArray)
-//       });
-//     })
-
 // Return checkboxes each with entire object for each movie that is found in query (each matrix movie)
 // app.get("/movies/:movietitle", (req, res) => {
 //   const movietitle = req.params.movietitle;
@@ -147,7 +50,6 @@ app.get("/", (req, res) => {
 //     });
 //   })
 
-//Most recent
 app.get("/movies/:movietitle", (req, res) => {
   const movietitle = req.params.movietitle;
   console.log(`Looking for movie ${movietitle}`);
@@ -156,21 +58,18 @@ app.get("/movies/:movietitle", (req, res) => {
   movieCollection
     .find(query)
     .limit(10)
-    .toArray((err, matchingMovies) => {
-      console.log(matchingMovies);
-      // res.status(200).json(matchingMovies);
-      let movieArray = JSON.stringify(matchingMovies);
+    .toArray((err, movieArray) => {
       console.log(movieArray);
-      function loopThrough(movieArray) {
-        let output = "<html><body><ul>";
-        for (let i = 0; i < movieArray.length; i++) {
-          output =
-            output + '<li><input type="checkbox">' + movieArray + "</li>";
-        }
-        output = output + "</ul></body></html>";
-        res.send(output);
+      let output = "<html><body><ul>";
+      for (let i = 0; i < movieArray.length; i++) {
+        output =
+          output +
+          '<li><input type="checkbox">' +
+          movieArray[i].title +
+          "</li>";
       }
-      loopThrough(movieArray);
+      output = output + "</ul></body></html>";
+      res.send(output);
     });
 });
 
